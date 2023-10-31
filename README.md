@@ -1,4 +1,5 @@
-将超出服务集群处理能力的请求放入队列中，需要Load balance的配
+将超出服务集群处理能力的请求放入队列中，需要Load balance的配合
+
 /cmd/queue/main.go --启动入口
 /config/queue.yaml --配置文件
 /global/config.go -- 配置对象
