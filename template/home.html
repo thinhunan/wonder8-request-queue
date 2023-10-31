@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="UTF-8">
+    <title>排队中…… you are queuing...</title>
+    <style>
+    </style>
+</head>
+<body>
+
+<div class="container" id="app">
+     <h2 id="show"></h2>
+</div>
+
+</body>
+<script type="text/javascript">
+    let gWS;
+    const joinchat = function () {
+        if ("WebSocket" in window) {
+            // 打开一个 websocket 连接
+            let url = `ws:/${''}/${location.host}/ws${location.search}`;
+            gWS = new WebSocket(url);
+
+            gWS.onopen = function () {
+                // WebSocket 已连接上的回调
+                gWS.send("{}");
+            };
+
+            gWS.onmessage = function (evt) {
+                let data = JSON.parse(evt.data);
+                console.log(evt)
+                /*
+                type Message struct {
+                    Left int
+                    Position int
+                    Estimate int
+                    MsgTime time.Time
+                }
+                 */
+                const showElement = document.getElementById("show");
+                if(data.Position === -1){
+                    showElement.innerText = "已完成排队，去抢票吧！"
+                    //todo 跳转回下单场景，此时已拿到pass
+                    setTimeout(()=>{
+                        gWS.close();
+                        location.href = "http://www.baidu.com/";
+                    },500)
+                }
+                else {
+                    showElement.innerText = `您之前还有${data.Position}位在排队，预计需等待${data.Estimate}秒`;
+                }
+            };
+
+            gWS.onerror = function (evt) {
+                console.log("发生错误：");
+                console.log(evt);
+            };
+
+            gWS.onclose = function () {
+                console.log("连接已关闭")
+            };
+        } else {
+            alert("您的浏览器不支持 WebSocket!");
+        }
+    }
+
+    const leavechat = function() {
+        gWS.close();
+    }
+
+    const keepAlive = function() {
+        if (gWS.readyState === WebSocket.CLOSED) {
+            console.log("reconnect");
+            joinchat();
+        }
+    }
+
+    joinchat();
+    setInterval(keepAlive, 10000);
+</script>
+
+</html>

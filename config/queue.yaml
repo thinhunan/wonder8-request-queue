@@ -1,0 +1,22 @@
+port: 80
+redis:
+  queue:
+    addr: '10.1.2.17:6380'
+    username: ''
+    password: 'dev_redis'
+    db: 11
+  pass:
+    addr: '10.1.2.17:6380'
+    username: ''
+    password: 'dev_redis'
+    db: 10
+#系统容量，同时可处理的用户数量
+#可动态更新配置生效
+systemCapacity: 10
+#每秒最低可新增多少用户进去处理
+#因为已拿到pass的用户就算没有动作，pass也不是马上过期的
+#可动态更新配置生效
+minCapacity: 0
+#pass过期秒数
+expireDuration: 30
+maxQueueCapacity: 10000
